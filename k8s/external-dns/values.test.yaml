@@ -1,0 +1,26 @@
+fullnameOverride: external-dns
+
+azure:
+  resourceGroup: aks_todo
+  subscriptionId: e55fd568-f62a-47d7-8fc5-1c3b6818f869
+  
+domainFilters:
+  - todo.julienp-kubernetes.click
+
+serviceAccount:
+  labels:
+    azure.workload.identity/use: "true"
+  annotations:
+    azure.workload.identity/client-id: a28ea4c0-7e77-47c2-ae86-ae8a1e2ae1f0
+
+extraVolumes:
+  - name: azure-config-file
+    secret:
+      secretName: external-dns-azure
+
+extraVolumeMounts:
+  - name: azure-config-file
+    mountPath: /etc/kubernetes
+    readOnly: true
+
+provider: azure

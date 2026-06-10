@@ -3,10 +3,14 @@ kind: Service
 metadata:
   name: todo-list-service
   namespace: todo-list
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: "todo.julienp-kubernetes.click"
+    external-dns.alpha.kubernetes.io/ttl: "300"
+    externaldns.alpha.kubernetes.io/external: "true"
 spec:
+  type: ClusterIP
   selector:
     app: todo-list
   ports:
-    - protocol: TCP
-      port: 80
+    - port: 80
       targetPort: 5000

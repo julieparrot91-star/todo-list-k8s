@@ -1,0 +1,19 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    email: julie.parrot91@gmail.com
+    privateKeySecretRef:
+      name: letsencrypt-staging
+    solvers:
+      - dns01:
+          azureDNS:
+            resourceGroupName: aks_todo
+            subscriptionID: e55fd568-f62a-47d7-8fc5-1c3b6818f869
+            hostedZoneName: julienp-kubernetes.click
+            environment: AzurePublicCloud
+            managedIdentity:
+              clientID: a28ea4c0-7e77-47c2-ae86-ae8a1e2ae1f0

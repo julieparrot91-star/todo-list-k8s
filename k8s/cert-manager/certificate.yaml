@@ -1,0 +1,11 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: julienp-kubernetes-click
+spec:
+  secretName: julienp-kubernetes-click-staging-tls
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
+  commonName: "todo.julienp-kubernetes.click"
+  dnsNames: ["todo.julienp-kubernetes.click", "*.todo.julienp-kubernetes.click"]

@@ -1,12 +1,20 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: todo-list--ingress
+  name: todo-list-ingress
   namespace: todo-list
+  annotations:
+    externaldns.alpha.kubernetes.io/external: "true"
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
 spec:
   ingressClassName: nginx
+  tls:
+      - hosts:
+          - todo.julienp-kubernetes.click
+        secretName: julienp-kubernetes-click-prod-tls
   rules:
-  - http:
+  - host: "todo.julienp-kubernetes.click"
+    http:
       paths:
       - path: /
         pathType: Prefix

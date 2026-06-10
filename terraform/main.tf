@@ -18,3 +18,12 @@ module "aks-cluster" {
 	environment = var.environment
         aks_subnet_id = module.network.aks_subnet_id
 }
+
+module "dns" {
+	source = "./modules/dns"
+	rg_name = azurerm_resource_group.aks.name
+	location = azurerm_resource_group.aks.location
+	environment = var.environment
+	dns_zone_name = var.dns_zone_name
+	oidc = var.oidc
+}

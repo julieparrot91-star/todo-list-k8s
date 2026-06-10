@@ -1,0 +1,6 @@
+{
+  "tenantId": "a5b75bdf-981b-4790-acdb-7da5e8d808b4",
+  "subscriptionId": "e55fd568-f62a-47d7-8fc5-1c3b6818f869",
+  "resourceGroup": "aks_todo",
+  "useManagedIdentityExtension": true
+}

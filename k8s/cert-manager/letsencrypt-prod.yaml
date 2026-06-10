@@ -1,0 +1,23 @@
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-prod
+spec:
+  acme:
+    # The ACME server URL
+    server: https://acme-v02.api.letsencrypt.org/directory
+    # Email address used for ACME registration
+    email: julie.parrot91@gmail.com
+    # Name of a secret used to store the ACME account private key
+    privateKeySecretRef:
+      name: letsencrypt-prod
+    # Enable the HTTP-01 challenge provider
+    solvers:
+      - dns01:
+          azureDNS:
+            resourceGroupName: aks_todo
+            subscriptionID: e55fd568-f62a-47d7-8fc5-1c3b6818f869
+            hostedZoneName: julienp-kubernetes.click
+            environment: AzurePublicCloud
+            managedIdentity:
+              clientID: a28ea4c0-7e77-47c2-ae86-ae8a1e2ae1f0

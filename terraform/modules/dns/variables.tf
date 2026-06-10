@@ -1,23 +1,21 @@
 variable "location" {
-	description = "Azure region"
 	type = string
-	default = "West Europe"
+	description = "Region of azure"
 }
 
 variable "rg_name" {
-	description = "Resource group name"
 	type = string
-}
-
-variable "environment" {
-	description = "Environment name (dev, prod)"
-	type = string
-	default = "dev"
+	description = "name of resource group"
 }
 
 variable "dns_zone_name" {
   type        = string
   description = "dns zone name like example.com"
+}
+
+variable "environment" {
+	type = string
+	description = ""
 }
 
 variable "oidc" {
