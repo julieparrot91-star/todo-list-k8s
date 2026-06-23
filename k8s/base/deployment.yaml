@@ -15,9 +15,23 @@ spec:
       labels:
         app: todo-list
     spec:
+      imagePullSecrets:
+        - name: acrsecret
       containers:
-      - image: kartoshkasmyasom/todo-list
+      - image: containerregistry2.azurecr.io/todo-app:v1.0
         name: todo-list
+        imagePullPolicy: Always
+        env:
+          - name: MONGO_URL
+            valueFrom:
+              configMapKeyRef:
+                name: todo-config
+                key: MONGO_URL
+          - name: MONGO_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: mongo-secret
+                key: MONGO_PASSWORD
         resources:
           requests:
             cpu: "100m"
@@ -28,18 +42,62 @@ spec:
         livenessProbe:
           httpGet:
             path: /
-            port: 5000
+            port: 8000
           initialDelaySeconds: 3
           periodSeconds: 3
         readinessProbe:
           httpGet:
             path: /
-            port: 5000
+            port: 8000
           initialDelaySeconds: 3
           periodSeconds: 3
         volumeMounts:
         - name: data
           mountPath: /app/data
+      - image: quay.io/oauth2-proxy/oauth2-proxy
+        name: oauth2-proxy
+        env:
+          - name: OAUTH2_PROXY_CLIENT_ID
+            valueFrom:
+              secretKeyRef:
+                name: oauth2-secret
+                key: CLIENT_ID
+          - name: OAUTH2_PROXY_CLIENT_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: oauth2-secret
+                key: CLIENT_SECRET
+          - name: OAUTH2_PROXY_COOKIE_SECRET
+            valueFrom:
+              secretKeyRef:
+                name: oauth2-secret
+                key: COOKIE_SECRET
+        args:
+          - --provider=oidc
+          - --client-id=$(OAUTH2_PROXY_CLIENT_ID)
+          - --client-secret=$(OAUTH2_PROXY_CLIENT_SECRET)
+          - --oidc-issuer-url=https://login.microsoftonline.com/a5b75bdf-981b-4790-acdb-7da5e8d808b4/v2.0
+          - --redirect-url=https://todo.julienp-kubernetes.click/oauth2/callback
+          - --email-domain=*
+          - --skip-provider-button=true
+          - --http-address=0.0.0.0:4180
+          - --upstream=http://localhost:8000
+          - --cookie-secret=$(OAUTH2_PROXY_COOKIE_SECRET)
+          - --scope=openid email
+          - --session-store-type=redis
+          - --redis-connection-url=redis://redis:6379
+        livenessProbe:
+          httpGet:
+            path: /ping
+            port: 4180
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ping
+            port: 4180
+          initialDelaySeconds: 5
+          periodSeconds: 10
       volumes:
       - name: data
         persistentVolumeClaim:

@@ -5,10 +5,10 @@ terraform {
                         source = "hashicorp/azurerm"
                         version = "~> 3.0"
                 }
-		azurecaf = {
-         		source  = "aztfmod/azurecaf"
-         		version = "2.0.0-preview3"
-       }
+		 grafana = {
+      			source  = "grafana/grafana"
+      			version = "4.38.0"
+    		}
         }
 }
 
@@ -16,7 +16,21 @@ provider "azurerm" {
         features {}
 }
 
-provider "azurecaf" {
-  # Configuration options
+# Configurer via variables d'environnement:
+# TF_VAR_grafana_url et TF_VAR_grafana_auth
+variable "grafana_url" {
+  description = "URL de l'instance Grafana"
+  type        = string
+}
+
+variable "grafana_auth" {
+  description = "Token d'authentification Grafana (sensible)"
+  type        = string
+  sensitive   = true
+}
+
+provider "grafana" {
+  url  = var.grafana_url
+  auth = var.grafana_auth
 }
 
